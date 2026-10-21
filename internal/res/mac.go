@@ -71,6 +71,12 @@ func LoadMac(dir string) (*Resources, error) {
 		}
 		r.Strings[strings.TrimSuffix(filepath.Base(p), ".plist")] = plistStrings(string(b))
 	}
+	// LairWare 2.0 has no MoreMessages: fill missing tables from the later release.
+	for k, v := range pcStrings {
+		if _, ok := r.Strings[k]; !ok {
+			r.Strings[k] = v
+		}
+	}
 	return r, nil
 }
 

@@ -50,3 +50,7 @@ The 2.0 app keeps `Contents/Resources/Ultima III.rsrc` and
 `Contents/Resources/Strings/*.plist` where the repository has
 `English.lproj/MainResources.rsrc` and `English.lproj/Strings`; `LoadMac`
 accepts either layout.
+
+Its data matches the repository's except: the default roster (ROST 500)
+differs, Strings has no MoreMessages.plist (filled from `pctables.go`), and
+Messages/TilesVoices differ in a few quotes and line wording.
