@@ -163,8 +163,6 @@ type Screen struct {
 	// when anything in the Settings menu does.
 	OnModeChange     func()
 	OnSettingsChange func()
-	// OnTileSet is called when the tile set changes (the app redraws its window title).
-	OnTileSet func()
 
 	underPaused *image.RGBA
 	overlay     func(t time.Duration)
@@ -949,3 +947,7 @@ func (s *Screen) ShowMoons() {
 func (s *Screen) invert(x, y, w, h int) { s.c.Invert(s.cells(x, y, w, h)) }
 
 var _ game.IO = (*Screen)(nil)
+
+// Lock takes the screen for the game goroutine, which holds it while it
+// runs; the screen lets go of it while the game waits.
+func (s *Screen) Lock() { s.mu.Lock() }

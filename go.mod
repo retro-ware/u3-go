@@ -15,6 +15,8 @@ require (
 	github.com/bodgit/plumbing v1.3.0 // indirect
 	github.com/bodgit/sevenzip v1.6.5 // indirect
 	github.com/bodgit/windows v1.0.1 // indirect
+	github.com/ebitengine/gomobile v0.0.0-20260820040257-d11f821a26a6 // indirect
+	github.com/ebitengine/hideconsole v1.0.0 // indirect
 	github.com/ebitengine/oto/v3 v3.5.0 // indirect
 	github.com/ebitengine/purego v0.11.0 // indirect
 	github.com/hajimehoshi/go-mp3 v0.3.4 // indirect
@@ -27,6 +29,7 @@ require (
 	github.com/stangelandcl/ppmd v0.1.1 // indirect
 	github.com/ulikunitz/xz v0.5.17 // indirect
 	go4.org v0.0.0-20260112195520-a5071408f32f // indirect
+	golang.org/x/sync v0.23.0 // indirect
 	golang.org/x/sys v0.48.0 // indirect
 	golang.org/x/text v0.42.0 // indirect
 )

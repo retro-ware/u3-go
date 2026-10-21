@@ -360,3 +360,6 @@ func decodeMP3(b []byte) *clip {
 	}
 	return &clip{out}
 }
+
+// OnLong sets what hears of a long effect starting (the music ducks under it).
+func (p *SoundPlayer) OnLong(f func(seconds float64)) { p.onLong = f }

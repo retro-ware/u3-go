@@ -459,9 +459,6 @@ func (s *Screen) loadTiles(name string) {
 	}
 	s.TileSetName = name
 	s.setGraphics(g)
-	if s.OnTileSet != nil {
-		s.OnTileSet()
-	}
 }
 
 // NextTileSet steps to the next tile set, round and round (Alt-Shift-6).

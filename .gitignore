@@ -3,3 +3,4 @@ ref/
 /data/
 /save/
 .progress/
+.bin/
