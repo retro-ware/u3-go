@@ -20,12 +20,18 @@ func TestImportedMaskSkipsOwnSheet(t *testing.T) {
 	}
 	white := image.NewRGBA(image.Rect(0, 0, 768, 1024)) // white: cut everything
 	draw.Draw(white, white.Rect, image.NewUniform(color.White), image.Point{}, draw.Src)
-	f, err := os.Create(filepath.Join(dir, "Standard-Mask.png"))
-	if err != nil {
-		t.Fatal(err)
+	write := func(name string, img image.Image) {
+		f, err := os.Create(filepath.Join(dir, name))
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer f.Close()
+		if err := png.Encode(f, img); err != nil {
+			t.Fatal(err)
+		}
 	}
-	png.Encode(f, white)
-	f.Close()
+	write("Standard-Mask.png", white)
+	write("Standard-Font.png", image.NewRGBA(image.Rect(0, 0, fontGlyphs*8, 8))) // Standard's font is LairWare's
 
 	g, err := LoadGraphics("Standard", data)
 	if err != nil {
