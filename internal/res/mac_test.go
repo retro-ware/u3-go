@@ -1,8 +1,10 @@
 package res
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"golang.org/x/text/encoding/charmap"
 	"os"
 	"reflect"
 	"strconv"
@@ -57,6 +59,10 @@ func TestLoadMac(t *testing.T) {
 	eq("monsters", r.Monsters, want["monsters"])
 	eq("talk", r.Talk, want["talk"])
 	eq("combat", r.Combat, want["combat"])
+	for id, n := range names { // the JSON keeps Mac Roman bytes as Latin-1
+		b, _ := charmap.ISO8859_1.NewEncoder().String(n)
+		names[id] = macRoman([]byte(b))
+	}
 	eq("names", r.MapNames, names)
 	eq("party", r.DefaultParty, want["party"][500])
 	eq("roster", r.DefaultRoster, want["roster"][500])
@@ -76,7 +82,10 @@ func TestPCTables(t *testing.T) {
 	if err != nil {
 		t.Skip("ref/ missing")
 	}
-	if !reflect.DeepEqual(r.Misc, pcMisc) || !reflect.DeepEqual(r.DefaultParty, pcParty) ||
+	party := bytes.Clone(r.DefaultParty) // the PC's is LairWare's, unformed
+	party[1] = 0
+	clear(party[6:10])
+	if !reflect.DeepEqual(r.Misc, pcMisc) || !reflect.DeepEqual(party, pcParty) ||
 		!reflect.DeepEqual(r.MapNames, pcMapNames) || !reflect.DeepEqual(r.Strings, pcStrings) ||
 		!reflect.DeepEqual(r.Maps[Sosaria][4097:], pcWhirlpool) {
 		t.Error("pctables.go differs from the LairWare data")

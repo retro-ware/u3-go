@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"golang.org/x/text/encoding/charmap"
 	"html"
 	"os"
 	"path/filepath"
@@ -152,12 +153,10 @@ func parseFork(f []byte) (out []macRes, err error) {
 	return out, nil
 }
 
-// macRoman keeps each byte as the code point of the same number, as the
-// reference extractor did.
+// macRoman decodes Mac OS Roman text (the reference extractor kept the bytes
+// as Latin-1, giving "DardinÕs Pit"), with curly apostrophes made straight
+// for the games' ASCII fonts.
 func macRoman(b []byte) string {
-	r := make([]rune, len(b))
-	for i, c := range b {
-		r[i] = rune(c)
-	}
-	return string(r)
+	s, _ := charmap.Macintosh.NewDecoder().Bytes(b)
+	return strings.ReplaceAll(string(s), "’", "'")
 }

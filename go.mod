@@ -8,6 +8,7 @@ require (
 	github.com/hajimehoshi/ebiten/v2 v2.10.5
 	github.com/retro-ware/gameimport v0.0.0-00010101000000-000000000000
 	golang.org/x/image v0.46.0
+	golang.org/x/text v0.42.0
 )
 
 require (
@@ -31,5 +32,4 @@ require (
 	go4.org v0.0.0-20260112195520-a5071408f32f // indirect
 	golang.org/x/sync v0.23.0 // indirect
 	golang.org/x/sys v0.48.0 // indirect
-	golang.org/x/text v0.42.0 // indirect
 )

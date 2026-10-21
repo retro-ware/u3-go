@@ -23,8 +23,9 @@ func locations(v ...byte) []byte {
 	return v
 }
 
-// pcParty is the party record a new game starts from.
-var pcParty = append([]byte{126, 4, 0, 42, 20, 255, 1, 2, 3, 4}, make([]byte, 54)...)
+// pcParty is the party record a new game starts from: LairWare's, but not
+// formed (no members), as the PC's roster ships empty.
+var pcParty = append([]byte{126, 0, 0, 42, 20, 255}, make([]byte, 58)...)
 
 // pcWhirlpool is Sosaria's whirlpool: x, y, dx, dy.
 var pcWhirlpool = []byte{47, 17, 1, 1}
@@ -34,7 +35,7 @@ var pcMapNames = map[int]string{
 	405: "East Montor", 406: "West Montor", 407: "Grey", 408: "Dawn", 409: "Devil Guard", 410: "Fawn",
 	411: "Death Gulch", 412: "Dungeon Doom", 413: "Dungeon Fires of Hell", 414: "Dungeon Time Awaits",
 	415: "Dungeon Clues", 416: "Dungeon Perinian Depths", 417: "Dungeon Mines of Morinia",
-	418: "Dungeon Dardin\u00d5s Pit", 420: "Sosaria", 421: "Ambrosia",
+	418: "Dungeon Dardin's Pit", 420: "Sosaria", 421: "Ambrosia",
 }
 
 var pcStrings = map[string][]string{
