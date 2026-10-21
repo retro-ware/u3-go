@@ -248,7 +248,7 @@ func TestJournalPrayInYew(t *testing.T) {
 	w, io := inTown(t, 404)
 	w.X, w.Y = 0x30, 0x30
 	io.Keys, io.Inputs = []string{"1"}, []string{"PRAY"}
-	OtherCommand(w, io)
+	OtherCommand(w, io, false)
 	if !strings.Contains(io.out(), "EVOCARE") {
 		t.Fatal(io.out())
 	}
@@ -261,7 +261,7 @@ func TestJournalPrayInYew(t *testing.T) {
 	w.Journal = EmptyJournal()
 	w.X = 20
 	io.Keys, io.Inputs = []string{"1"}, []string{"PRAY"}
-	OtherCommand(w, io)
+	OtherCommand(w, io, false)
 	eq(t, w.Journal.Words, []string{})
 }
 
@@ -274,7 +274,7 @@ func TestJournalWordsLearnt(t *testing.T) {
 	eq(t, KnownWords(w), []string{"BRIBE", "DIG"})
 	eq(t, labels(t, w, "Words"), []string{mysteryLabel, "BRIBE", mysteryLabel, mysteryLabel, mysteryLabel, "DIG", mysteryLabel})
 	io.Keys, io.Inputs = []string{"1"}, []string{"SCREAM"}
-	OtherCommand(w, io)
+	OtherCommand(w, io, false)
 	eq(t, io.WordsOffered, []string{"BRIBE", "DIG"})
 	if !strings.Contains(io.out(), "AIEEEEE") {
 		t.Fatal(io.out())

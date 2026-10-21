@@ -48,10 +48,12 @@ type Game struct {
 func NewGame(w *World, io IO, options GameOptions) *Game {
 	g := &Game{World: w, IO: io, options: options}
 	g.hooks = TurnHooks{
-		Attack:   func(i int) { AttackMonster(w, io, i) },
-		BombTrap: func() { BombTrap(w, io) },
-		ShowBall: func(vx, vy int) {
-			ShowBall(w, io, w.Constrain(w.X-5+vx), w.Constrain(w.Y-5+vy), ShapeFireBall)
+		MonsterHooks: MonsterHooks{
+			Attack:   func(i int) { AttackMonster(w, io, i) },
+			BombTrap: func() { BombTrap(w, io) },
+			ShowBall: func(vx, vy, _ int) {
+				ShowBall(w, io, w.Constrain(w.X-5+vx), w.Constrain(w.Y-5+vy), ShapeFireBall, false)
+			},
 		},
 		GoWhirlpool: g.goWhirlpool,
 		DungeonTurn: func() {},
@@ -138,7 +140,7 @@ func (g *Game) Run() {
 		if w.TakeCancelled() {
 			continue // backed out at a prompt: no turn passes
 		}
-		EndTurn(w, io, g.hooks)
+		EndTurn(w, io, &g.hooks)
 		if wanted := g.locationMusic(); w.Music != wanted && w.Party.Location() != LocationCombat {
 			g.setMusic(wanted)
 		}
@@ -154,7 +156,7 @@ func (g *Game) waitForCommand() string {
 		remaining = float64(limit)
 	}
 	for {
-		WhirlpoolTick(g.World, g.IO, g.hooks)
+		WhirlpoolTick(g.World, g.IO, &g.hooks)
 		if remaining <= 0 {
 			return KeySpace
 		}
@@ -229,7 +231,7 @@ func (g *Game) Dispatch(key string) {
 	case "B":
 		Board(w, io)
 	case "C":
-		Cast(w, io)
+		Cast(w, io, -1)
 	case QuickCastKey:
 		if !QuickHeal(w, io) {
 			What2(io)
@@ -263,13 +265,13 @@ func (g *Game) Dispatch(key string) {
 	case "N":
 		NegateTime(w, io)
 	case "O":
-		OtherCommand(w, io)
+		OtherCommand(w, io, false)
 	case "P":
 		PeerGem(w, io)
 	case "Q":
 		g.quit()
 	case "R":
-		ReadyWeapon(w, io)
+		ReadyWeapon(w, io, -1)
 	case "S":
 		Steal(w, io)
 	case "T":
@@ -285,7 +287,7 @@ func (g *Game) Dispatch(key string) {
 	case "Y":
 		Yell(w, io)
 	case "Z":
-		Stats(w, io)
+		Stats(w, io, -1)
 	}
 	// Unknown keys are ignored but still cost a turn, as in the original.
 }

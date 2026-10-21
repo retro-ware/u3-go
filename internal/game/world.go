@@ -240,15 +240,15 @@ type World struct {
 	OnRulesChange      func() // the game changed a rule setting itself
 	OnAutoCombatChange func() // the game turned auto-combat off itself
 
-	BalancedXP   bool        // a kill's experience is shared among the living members
-	LastSpell    map[int]int // each member's last spell this session
-	Journal      JournalState
-	AutoCombat   bool
-	PoisonKills  bool
-	Starvation   Starvation
-	Timer        Timer
+	BalancedXP    bool        // a kill's experience is shared among the living members
+	LastSpell     map[int]int // each member's last spell this session
+	Journal       JournalState
+	AutoCombat    bool
+	PoisonKills   bool
+	Starvation    Starvation
+	Timer         Timer
 	DiagonalMoves bool // may the party move, attack and fire diagonally
-	SpellFlags   SpellFlags
+	SpellFlags    SpellFlags
 }
 
 // NewWorld builds a world on the pristine resources; seed 0 seeds from the clock.
