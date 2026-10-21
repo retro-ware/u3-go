@@ -53,9 +53,9 @@ type Keyboard struct {
 	pausedFor time.Duration // time spent paused before the current pause
 
 	lastSource string
-	onPause    func(reason string) // the game paused
-	onResume   func()              // it runs again
-	onInput    func()              // any key from any source
+	onPause    func(reason string)        // the game paused
+	onResume   func(paused time.Duration) // it runs again, after being paused this long
+	onInput    func()                     // any key from any source
 
 	// Headless: keys come from script; when it runs out while the game
 	// waits, onIdle is called (the -shot check takes its picture and exits).
@@ -141,13 +141,15 @@ func (k *Keyboard) Resume(reason string) {
 	}
 	delete(k.holds, reason)
 	last := len(k.holds) == 0
+	var away time.Duration
 	if last {
-		k.pausedFor += k.now() - k.pausedAt
+		away = k.now() - k.pausedAt
+		k.pausedFor += away
 	}
 	cb := k.onResume
 	k.mu.Unlock()
 	if last && cb != nil {
-		cb()
+		cb(away)
 	}
 }
 
