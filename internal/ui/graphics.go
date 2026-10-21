@@ -163,13 +163,17 @@ func sheetName(set string) string {
 // release's SHAPES.ULT.
 func (s source) tilesFor(set string) image.Image {
 	name := sheetName(set) + "-Tiles"
-	own := set == "Standard" || set == "Apple II Color"
+	own := ownSheet(set)
 	img := s.load([]string{name}, own, !own)
 	if img == nil && set == "PC CGA" {
 		img = pcSheet(s.data)
 	}
 	return img
 }
+
+// ownSheet says whether set's tiles are the port's (embedded) rather than the
+// import's: LairWare ships sheets under the same names, in its own layout.
+func ownSheet(set string) bool { return set == "Standard" || set == "Apple II Color" }
 
 // Available lists the tile sets whose sheets are found, in TileSets' order.
 func Available(data string) []string {
@@ -192,7 +196,9 @@ func LoadGraphics(name, data string) (*Graphics, error) {
 		return nil, errors.New("no tile sheet for " + name)
 	}
 	sheet := toRGBA(tiles)
-	if mask := s.load([]string{sheetName(name) + "-Mask"}, false, true); mask != nil {
+	// The mask comes from where the sheet did: LairWare's Standard-Mask is for
+	// its own 32-pixel sheet, not the port's.
+	if mask := s.load([]string{sheetName(name) + "-Mask"}, false, !ownSheet(name)); mask != nil {
 		sheet = applyMask(sheet, mask)
 	}
 	// The UI: the port's own frame for its sets, LairWare's, then Standard's.
