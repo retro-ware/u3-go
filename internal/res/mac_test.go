@@ -70,3 +70,15 @@ func TestLoadMac(t *testing.T) {
 	}
 	eq("strings", r.Strings, strs)
 }
+
+func TestPCTables(t *testing.T) {
+	r, err := LoadMac(refDir + "/Lairware/Resources/English.lproj")
+	if err != nil {
+		t.Skip("ref/ missing")
+	}
+	if !reflect.DeepEqual(r.Misc, pcMisc) || !reflect.DeepEqual(r.DefaultParty, pcParty) ||
+		!reflect.DeepEqual(r.MapNames, pcMapNames) || !reflect.DeepEqual(r.Strings, pcStrings) ||
+		!reflect.DeepEqual(r.Maps[Sosaria][4097:], pcWhirlpool) {
+		t.Error("pctables.go differs from the LairWare data")
+	}
+}
