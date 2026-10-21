@@ -26,6 +26,12 @@ func pcFile(name string) bool {
 	}
 }
 
+// pcName is name as the original disk spells it: some copies (the 1996
+// collections) are lower case with CNFLCT_A for CNFLCT-A.
+func pcName(name string) string {
+	return strings.ReplaceAll(strings.ToUpper(path.Base(name)), "_", "-")
+}
+
 // macRoot gives the part of name up to its app's Resources folder (the
 // LairWare layout), or false.
 func macRoot(name string) (string, bool) {
@@ -76,7 +82,7 @@ func importGame(src, dir string) error {
 	if pcDir != "" {
 		for name, b := range files {
 			if path.Dir(name) == pcDir && pcFile(name) {
-				if err := write(filepath.Join(dir, "pc", strings.ToUpper(path.Base(name))), b); err != nil {
+				if err := write(filepath.Join(dir, "pc", pcName(name)), b); err != nil {
 					return err
 				}
 			}

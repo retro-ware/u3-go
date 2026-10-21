@@ -25,7 +25,8 @@ func TestLoadDOS(t *testing.T) {
 	// LairWare's map fixes: a townsperson in Yew, two in Ambrosia.
 	macOnly := map[int]bool{404: true, 421: true}
 	for id, m := range mac.Maps {
-		if !macOnly[id] && !bytes.Equal(pc.Maps[id], m) {
+		// Sosaria is saved over in play: a played copy has its monsters moved.
+		if !macOnly[id] && id != Sosaria && !bytes.Equal(pc.Maps[id], m) {
 			t.Errorf("map %d differs", id)
 		}
 	}
