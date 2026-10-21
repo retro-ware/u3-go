@@ -144,6 +144,7 @@ type FakeIO struct {
 	KeyProvider  func() string // supplies keys after Keys runs dry; "" for none
 	Inputs       []string
 	Redraws      int
+	OnRedraw     func() // called on each RedrawMap, for tests that act mid-fight
 	Images       []string
 	MusicTrack   int
 	Flashes      []string
@@ -275,8 +276,13 @@ func (f *FakeIO) InputTextAt(_, _, max int, numbersOnly bool) string {
 }
 func (f *FakeIO) Sound(name string) { f.Sounds = append(f.Sounds, name) }
 func (f *FakeIO) Music(track int)   { f.MusicTrack = track }
-func (f *FakeIO) RedrawMap()        { f.Redraws++ }
-func (f *FakeIO) FlashTiles()       {}
+func (f *FakeIO) RedrawMap() {
+	if f.OnRedraw != nil {
+		f.OnRedraw()
+	}
+	f.Redraws++
+}
+func (f *FakeIO) FlashTiles() {}
 func (f *FakeIO) FlashSpell(kind SpellFlash, _ int, sound string) {
 	f.Flashes = append(f.Flashes, string(kind))
 	f.Sounds = append(f.Sounds, sound)
