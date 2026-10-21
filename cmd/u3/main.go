@@ -34,6 +34,7 @@ func main() {
 	tiles := flag.String("tiles", "", "write the tile set's tiles to this PNG and exit")
 	set := flag.String("set", "", "tile set to use (default: the remembered one)")
 	newGame := flag.Bool("new", false, "start without the saved game")
+	at := flag.String("at", "", "development start, straight into the game: world:X,Y, ambrosia, place:NAME or fight:NAME")
 	flag.Parse()
 	if *imp != "" {
 		if err := importGame(*imp, *data); err != nil {
@@ -42,13 +43,13 @@ func main() {
 		}
 		return
 	}
-	if err := run(*data, *saveDir, *shot, *keys, *tiles, *set, *newGame); err != nil {
+	if err := run(*data, *saveDir, *shot, *keys, *tiles, *set, *at, *newGame); err != nil {
 		fmt.Fprintln(os.Stderr, "u3:", err)
 		os.Exit(1)
 	}
 }
 
-func run(data, saveDir, shot, keys, tiles, set string, newGame bool) error {
+func run(data, saveDir, shot, keys, tiles, set, at string, newGame bool) error {
 	r, err := res.Load(data)
 	if err != nil {
 		return fmt.Errorf("no game files in %s (run u3 -import first): %w", data, err)
@@ -80,6 +81,22 @@ func run(data, saveDir, shot, keys, tiles, set string, newGame bool) error {
 		w.NewGame()
 		w.AutoMap.Clear()
 	}
+	// A development start places the party and plays its first key, as a player would.
+	var first []string
+	if at != "" {
+		a := game.ParseAt(at)
+		if a == nil {
+			return fmt.Errorf("-at %s: not a start", at)
+		}
+		key, err := game.StartAt(w, *a)
+		if err != nil {
+			return fmt.Errorf("-at %s: %w", at, err)
+		}
+		w.Party.SetRulesPending(false)
+		if key != "" {
+			first = []string{key}
+		}
+	}
 	sounds := ui.NewSoundPlayer(ctx, data)
 	music := ui.NewMusicPlayer(ctx, data)
 	sounds.OnLong(music.Duck)
@@ -87,7 +104,7 @@ func run(data, saveDir, shot, keys, tiles, set string, newGame bool) error {
 	var screen *ui.Screen
 	var k *ui.Keyboard
 	if headless {
-		k = ui.NewScriptKeyboard(ui.ParseScript(keys), func() {
+		k = ui.NewScriptKeyboard(append(first, ui.ParseScript(keys)...), func() {
 			if err := screen.Snapshot(shot); err != nil {
 				fmt.Fprintln(os.Stderr, "u3: shot:", err)
 				os.Exit(1)
@@ -126,6 +143,12 @@ func run(data, saveDir, shot, keys, tiles, set string, newGame bool) error {
 			Save: func(w *game.World) bool { return game.WriteSave(store, w) },
 			Load: func(w *game.World) bool { return game.ReadSave(store, w) },
 		})
+		if at != "" {
+			if !headless && len(first) > 0 {
+				k.Push(first[0], "")
+			}
+			g.Run()
+		}
 		game.MainMenu(w, screen, g.Run, game.MenuOptions{
 			Save:     func(w *game.World) { game.WriteSave(store, w) },
 			Transfer: fileTransfer{w, store, saveDir},
