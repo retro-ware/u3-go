@@ -47,3 +47,9 @@ func TestLoadDOS(t *testing.T) {
 		t.Errorf("LCB talk %x, want %x", got, want)
 	}
 }
+
+func TestLooksLikeMap(t *testing.T) {
+	if !looksLikeMap(make([]byte, townSize)) || looksLikeMap(bytes.Repeat([]byte{0x55}, townSize)) {
+		t.Error("looksLikeMap")
+	}
+}

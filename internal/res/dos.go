@@ -65,6 +65,9 @@ func LoadDOS(dir string) (*Resources, error) {
 		if len(b) < townSize+townTalk+townMonsters {
 			return nil, fmt.Errorf("%s.ULT: short map", name)
 		}
+		if !looksLikeMap(b[:townSize]) {
+			return nil, fmt.Errorf("%s.ULT is not a map (a damaged copy?)", name)
+		}
 		m := append([]byte{64}, b[:townSize]...)
 		if id == Sosaria {
 			m = append(m, pcWhirlpool...)
@@ -90,6 +93,18 @@ func LoadDOS(dir string) (*Resources, error) {
 	}
 	r.DefaultRoster = roster
 	return r, nil
+}
+
+// looksLikeMap checks that the tiles are map values, all multiples of 4
+// (Fawn has one stray).
+func looksLikeMap(b []byte) bool {
+	odd := 0
+	for _, v := range b {
+		if v%4 != 0 {
+			odd++
+		}
+	}
+	return odd < 16
 }
 
 func pad(b []byte) []byte {
