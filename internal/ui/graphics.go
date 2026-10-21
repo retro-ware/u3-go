@@ -84,12 +84,12 @@ type Graphics struct {
 	display       DisplayStyle
 
 	// Animation (gShapeSwapped, the scroll offsets, exoduslitez, twiddleFlag, animFlag).
-	swapped              [tileColumns * tileRows]bool
-	scroll               map[int]int
-	exodusFrame          int
-	exodusSkip           int
-	twiddle              []int
-	animPhase, animSkip  int
+	swapped             [tileColumns * tileRows]bool
+	scroll              map[int]int
+	exodusFrame         int
+	exodusSkip          int
+	twiddle             []int
+	animPhase, animSkip int
 }
 
 // source finds the sheets and pictures of a set in the import and the
