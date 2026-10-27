@@ -263,6 +263,7 @@ func (a *App) Run(title string) error {
 	ebiten.SetWindowTitle(title)
 	ebiten.SetWindowSize(b.Dx(), b.Dy())
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
+	ebiten.SetFullscreen(os.Getenv("GOPLAY_FULLSCREEN") == "1") // the goplay launcher asks for fullscreen
 	return ebiten.RunGame(a)
 }
 
